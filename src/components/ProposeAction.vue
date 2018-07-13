@@ -7,14 +7,26 @@
 <template>
 
 <div class="propose-action">
-    <form class="ink-form">
-        <div class="control-group column-group gutters">
-            <label for="action-type" class="all-20 align-right">Type</label>
-            <div class="control all-80">
-                <select name="action-type" v-model="selectedType">
-                    <option v-for="(actionType, index) in actionTypes" :value="index">{{ actionType.type }}</option>
-                </select>
-                <ActionInputs :actionType="actionTypes[selectedType]" />
+    <form class="ink-form" @submit.prevent="onSubmit">
+        <div class="column-group gutters">
+            <div class="control-group">
+                <label for="action-type" class="all-20">Type</label>
+                <div class="control all-60">
+                    <select name="action-type" v-model="selectedType" required>
+                        <option v-for="(_, actionType) in actionTypes" :value="actionType">{{ readableVar(actionType) }}</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="action-input" v-if="selectedType">
+                <div class="control-group" v-for="(ptype, param) in actionTypes[selectedType]">
+                    <label for="param" class="all-20">{{ readableVar(param) }}</label>
+                    <div class="control all-60">
+                        <input v-if="ptype == 'string'" type="text" v-model="paramsInput[param]">
+                        <input v-else-if="ptype == 'number'" type="number" v-model.number="paramsInput[param]">
+                    </div>
+                </div>
+                <input type="submit" value="Submit">
             </div>
         </div>
     </form>
@@ -25,47 +37,36 @@
 <script>
 
 //import Vue from 'vue'
-import ActionInputs from './ActionInputs.vue'
-
-
-const actionTypes = [{
-    type: "Create User",
-    params: {
-        name: "string",
-        voteCount: "number"
-    }
-}, {
-    type: "Remove Permissions",
-    params: {
-        name: "string",
-        permissions: "list"
-    }
-}, {
-    type: "Assign Permissions",
-    params: {
-        name: "string",
-        permissions: "list"
-    }
-}, {
-    type: "Change Vote Threshold",
-    params: {
-        voteType: "string",
-        newThreshold: "number"
-    }
-}];
-
 
 export default {
     name: 'ProposeAction',
-    components: { ActionInputs },
+    components: {},
     data() {
         return {
-          selectedType: 0,
-          actionTypes: actionTypes
+            selectedType: null,
+            actionTypes: this.$store.state.actionTypes,
+            paramsInput: {}
         }
     },
     methods: {
-    }
+        readableVar(param) {
+                return param
+                    .replace(/([A-Z])/g, ' $1') // Space before all caps
+                    .replace(/^./, function(str) {
+                        return str.toUpperCase()
+                    }) // Capitalize first char
+            },
+            onSubmit() {
+              this.$store.commit({
+                type: 'addAction',
+                actionType: this.selectedType,
+                actionParams: this.paramInput
+              })
+              this.selectedType = null
+              this.paramsInput = {}
+            }
+    },
+    computed: {}
 }
 
 </script>

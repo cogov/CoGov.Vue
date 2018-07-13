@@ -7,6 +7,7 @@
           <th>Action ID</th>
           <th>Date/User</th>
           <th>Action</th>
+          <th>Params</th>
           <th>Threshold</th>
           <th>Votes</th>
           <th>Status</th>
@@ -15,11 +16,12 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="action in ledger"
+        <tr v-for="action in $store.state.ledger"
           :key="action.actionId">
-          <td>{{ action.actionId }}</td>
+          <td>{{ action.id }}</td>
           <td>{{ action.date }}</td>
-          <td>{{ action.action }}</td>
+          <td>{{ action.actionType }}</td>
+          <td>{{ action.actionParams }}</td>
           <td>{{ action.threshold }}</td>
           <td>{{ action.votesMade }}</td>
           <td>{{ action.status }}</td>

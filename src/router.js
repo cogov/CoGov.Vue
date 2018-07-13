@@ -1,7 +1,9 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Home from './views/Home.vue'
-import About from './views/About.vue'
+import Ledger from '@/components/Ledger.vue'
+import ProposeAction from '@/components/ProposeAction.vue'
+import Collective from '@/views/Collective.vue'
+import User from '@/views/User.vue'
 
 Vue.use(Router)
 
@@ -9,13 +11,23 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'home',
-      component: Home
+      name: 'ledger',
+      component: Ledger
     },
     {
-      path: '/about',
-      name: 'about',
-      component: About
+      path: '/new-action',
+      name: 'new-action',
+      component: ProposeAction
+    },
+    {
+      path: '/collective',
+      name: 'collective',
+      component: Collective
+    },
+    {
+      path: '/user',
+      name: 'user',
+      component: User
     }
   ]
 })

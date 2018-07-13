@@ -6,7 +6,6 @@
     -moz-osx-font-smoothing: grayscale;
     text-align: center;
     color: #2c3e50;
-    margin-top: 60px;
 }
 
 </style>
@@ -14,26 +13,26 @@
 <template>
 
 <div id="app">
+    <NavBar />
     <img src="./assets/logo.png">
-    <Ledger />
-    <ProposeAction />
+    <router-view></router-view>
 </div>
 
 </template>
 
 <script>
 
+import NavBar from './components/NavBar.vue'
 import Ledger from './components/Ledger.vue'
 import ProposeAction from './components/ProposeAction.vue'
-import ActionInputs from './components/ActionInputs.vue'
 
 
 export default {
     name: 'app',
     components: {
+        NavBar,
         Ledger,
         ProposeAction,
-        ActionInputs
     },
     data() {
         return {
