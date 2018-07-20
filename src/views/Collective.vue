@@ -2,7 +2,7 @@
   <div class="collective">
     <div v-if="currentCollective">
       <h1>{{ currentCollective.name }}</h1>
-      <h2>{{ currentUser.name }}</h2>
+      <h2>Creator: {{ userById(currentCollective.creatorId).name }}</h2>
       <button @click="unsetCollective">Unset Collective</button>
     </div>
     <div v-else>
@@ -19,6 +19,6 @@ export default {
   name: "collective",
   components: { CreateCollective },
   methods: mapMutations(['unsetCollective']),
-  computed: mapGetters(['currentCollective', 'currentUser'])
+  computed: mapGetters(['currentCollective', 'currentUser', 'userById'])
 }
 </script>

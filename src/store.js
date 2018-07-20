@@ -12,13 +12,17 @@ const vuexLocalStorage = new VuexPersist({
 export default new Vuex.Store({
   state: {
     ledger: {}, //mapped by id
+    proposals: {}, //mapped by id
     users: {}, //mapped by id
     currentUserId: null,
     collectives: {}, //mapped by id
     currentCollectiveId: null,
+    currentProposalId: null,
     userIdCounter: 1,
     collectiveIdCounter: 1,
     actionIdCounter: 1,
+    proposalIdCounter: 1,
+    actionGroup: [],
     actionTypes: {
       addMember: {
         name: "string"
@@ -62,6 +66,12 @@ export default new Vuex.Store({
     },
     currentCollective: state => {
       return state.collectives[state.currentCollectiveId]
+    },
+    currentProposal: state => {
+      return state.proposals[state.currentProposalId]
+    },
+    userById: (state) => (id) => {
+      return state.users[id]
     }
   },
   mutations: {
@@ -73,20 +83,22 @@ export default new Vuex.Store({
       }
       state.ledger[actionItem.id] = actionItem
     },
-    createCollective (state, payload) {
+    registerUser (state, name) {
       let newUser = {
         id: state.userIdCounter++,
-        name: payload.adminName
+        name: name
       }
+      state.users[newUser.id] = newUser
+      state.currentUserId = newUser.id
+    },
+    createCollective (state, payload) {
       let newCollective = {
         id: state.collectiveIdCounter++,
         name: payload.collectiveName,
-        adminId: newUser.id
+        creatorId: payload.creatorId
       }
-      state.users[newUser.id] = newUser
       state.collectives[newCollective.id] = newCollective
       state.currentCollectiveId = newCollective.id
-      state.currentUserId = newUser.id
     },
     unsetCollective (state) {
       state.currentCollectiveId = null
@@ -96,6 +108,31 @@ export default new Vuex.Store({
     },
     signInUser (state, id) {
       state.currentUserId = id
+    },
+    setCollective(state, id) {
+      state.currentCollectiveId = id
+    },
+    addGroupAction (state) {
+      state.actionGroup.push({ paramsInput: {}, selectedType: null })
+    },
+    clearActions (state) {
+      state.newActionGroup = []
+    },
+    submitProposal(state, proposal) {
+      if (!proposal.id) {
+        proposal.id = state.proposalIdCounter++
+      }
+      proposal.date = new Date()
+      let revision = {
+        actionGroup: JSON.parse(JSON.stringify(proposal.actionGroup)),
+        name: proposal.name,
+        date: proposal.date
+      }
+      proposal.revisions.push(revision)
+      state.proposals[proposal.id] = proposal
+    },
+    selectProposal(state, proposalId) {
+      state.currentProposalId = proposalId
     }
   },
   actions: {

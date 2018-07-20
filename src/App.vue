@@ -23,16 +23,12 @@
 <script>
 
 import NavBar from './components/NavBar.vue'
-import Ledger from './components/Ledger.vue'
-import ProposeAction from './components/ProposeAction.vue'
 
 
 export default {
     name: 'app',
     components: {
-        NavBar,
-        Ledger,
-        ProposeAction,
+        NavBar
     },
     data() {
         return {
