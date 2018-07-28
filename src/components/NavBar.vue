@@ -1,18 +1,22 @@
 <template>
   <nav class="ink-navigation nav-bar">
     <ul class="menu horizontal black">
-      <li><router-link :to="{ name: 'proposal', params: { } }">New Proposal</router-link></li>
-      <li><router-link :to="{ name: 'proposals', params: {} }">Proposals</router-link></li>
       <li>
         <router-link :to="{ name: 'collective', params: {} }">
           <span v-if="currentCollective">Collective: {{ currentCollective.name }}</span>
           <span v-else>Set/Create Collective</span>
         </router-link>
       </li>
-      <li>
-        <router-link :to="{ name: 'user', params: {} }">
-          <span v-if="currentUser">User: {{ currentUser.name }}</span>
-          <span v-else>Register/Sign In</span>
+      <li v-if="currentCollective">
+        <router-link :to="{ name: 'council', params: {} }">
+          <span v-if="currentCouncil">Council: {{ currentCouncil.name }}</span>
+          <span v-else>Set/Create Council</span>
+        </router-link>
+      </li>
+      <li v-if="currentCouncil">
+        <router-link :to="{ name: 'proposal', params: { } }">
+          <span v-if="currentProposal">Proposal: {{ currentProposal.name }}</span>
+          <span v-else>New Proposal</span>
         </router-link>
       </li>
     </ul>
@@ -29,7 +33,7 @@ import { mapGetters } from 'vuex'
 export default {
   name: 'navbar',
   computed: {
-    ...mapGetters(['currentCollective', 'currentUser']),
+    ...mapGetters(['currentCollective', 'currentCouncil', 'currentProposal']),
   }
 }
 </script>

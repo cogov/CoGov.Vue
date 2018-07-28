@@ -2,9 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import ProposalForm from '@/views/ProposalForm.vue'
 import Collective from '@/views/Collective.vue'
-import User from '@/views/User.vue'
-import Revisions from '@/components/Revisions.vue'
-import Proposals from '@/views/Proposals.vue'
+import Council from '@/views/Council.vue'
 
 Vue.use(Router)
 
@@ -17,19 +15,14 @@ export default new Router({
       props: true
     },
     {
-      path: '/proposals',
-      name: 'proposals',
-      component: Proposals
-    },
-    {
       path: '/collective',
       name: 'collective',
       component: Collective
     },
     {
-      path: '/user',
-      name: 'user',
-      component: User
+      path: '/council',
+      name: 'council',
+      component: Council
     }
   ]
 })

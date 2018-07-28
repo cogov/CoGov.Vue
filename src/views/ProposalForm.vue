@@ -1,54 +1,92 @@
-
-
 <template>
-
 <div class="proposal">
-    <Revisions v-if="proposal.revisions.length" :revisions="proposal.revisions" />
-    <h2 v-if="proposal.revisions.length">Edit Proposal</h2>
-    <h2 v-else>New Proposal</h2>
-    <form class="ink-form" @submit.prevent="submitProposal(proposal)">
-        <label for="proposal-name">Proposal Name</label>
-        <input type="text" v-model="proposal.name">
+  <div v-if="currentProposal">
+    <h1>{{ currentProposal.name }}</h1>
+    <div class="revisions">
+        <h1>Proposal Revisions</h1>
+        <table class="ink-table alternating hover bordered">
+            <thead>
+                <tr>
+                    <th>Show Actions</th>
+                    <th>Date</th>
+                    <th>Name</th>
+                </tr>
+            </thead>
+            <RevisionRow v-for="(revision, index) in currentProposal.revisions" :revision="revision" :key="index" />
+        </table>
+    </div>
+    <button @click="unsetProposal">Unset Proposal</button>
+    <hr>
+  </div>
 
-        <Action v-for="(action, id) in proposal.actionGroup" :key="id" :action="action" />
-        <br />
-        <button @click.prevent="proposal.actionGroup.push({})">Add Action</button>
-        <button @click.prevent="proposal.actionGroup = []">Clear Actions</button>
-        <input type="submit" value="SUBMIT!">
-    </form>
+  <h2>
+    <span v-if="currentProposal">Edit</span>
+    <span v-else>New</span>
+    Proposal
+    <button v-if="showForm" @click="showForm=false">-</button>
+    <button v-else @click="showForm=true">+</button>
+  </h2>
+
+  <form v-show="showForm" class="ink-form" @submit.prevent="onSubmit">
+    <div class="ink-grid">
+      <div class="control-group column-group gutters">
+        <label for="proposal-name" class="all-20">Name</label>
+        <div class="control all-60">
+          <input type="text" v-model="proposalName">
+        </div>
+      </div>
+    </div>
+    <input type="submit" value="submit">
+  </form>
 </div>
-
 </template>
 
 <script>
-
-import Action from '@/components/Action.vue'
-import Revisions from '@/components/Revisions.vue'
-
 import {
-    mapMutations
+  mapMutations,
+  mapGetters,
+  mapState
 }
 from 'vuex'
+import RevisionRow from '@/components/RevisionRow.vue'
 
 export default {
-    name: 'ProposalForm',
-    props: {
-        proposal: {
-            type: Object,
-            default: function() {
-              console.log("Inserted Default")
-                return {
-                    actionGroup: [],
-                    revisions: [],
-                    name: ''
-                }
-            }
-        }
+  name: 'proposal',
+  components: { RevisionRow },
+  data() {
+    return {
+      proposalID: null,
+      proposalName: "",
+      showForm: false
+    }
+  },
+  methods: {
+    ...mapMutations(['setProposal', 'unsetProposal', 'submitProposal']),
+    onSubmit() {
+      this.submitProposal({
+        collectiveID: this.currentCollectiveID,
+        councilID: this.currentCouncilID,
+        proposalID: this.proposalID,
+        proposalName: this.proposalName
+      })
     },
-    components: {
-        Action, Revisions
-    },
-    methods: mapMutations(['submitProposal'])
+    updateParams() {
+      if (this.currentProposal) {
+        this.proposalID = this.currentProposal.id
+        this.proposalName = this.currentProposal.name
+      } else {
+        this.proposalID = null
+        this.proposalName = ""
+      }
+    }
+  },
+  computed: {
+    ...mapState(['currentProposalID', 'currentCouncilID', 'currentCollectiveID']),
+    ...mapGetters(['currentProposal', 'councilProposals'])
+  },
+  watch: {
+    'currentProposal': function() { this.updateParams() }
+  },
+  created: function() { this.updateParams() }
 }
-
 </script>

@@ -25,12 +25,13 @@ export default {
   props: ['proposal'],
   methods: {
     editProposal(proposal) {
-      console.log(proposal)
-      this.$router.push({ name: 'proposal', params: { proposal: proposal } })
-    }
+      this.setProposal(proposal.id)
+      this.$router.push({ name: 'proposal', params: {} } )
+    },
+    ...mapMutations(['setProposal'])
   },
   data() {
     return { showActions: false }
-  }
+  },
 }
 </script>
