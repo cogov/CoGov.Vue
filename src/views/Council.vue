@@ -1,27 +1,21 @@
 <template>
 <div class="council">
-  <div v-if="currentCouncil">
-    <h1>
-      {{ currentCouncil.name }}
-    </h1>
-    <button @click="unsetCouncil">Unset</button>
-    <hr>
-    <Proposals />
-  </div>
-  <div v-else>
-    <h2 v-if="collectiveCouncils.length">Set Council</h2>
-    <ul>
-      <li v-for="council in collectiveCouncils" :key="council.id">
-        <button @click="setCouncil(council.id)">{{ council.name }}</button>
-      </li>
-    </ul>
-  </div>
+  <h3>
+    {{ councilNameTree(currentCouncil) }}
+  </h3>
+  <button v-if="currentCouncil.parentCouncilID" @click="setCouncil(currentCouncil.parentCouncilID)">Shift Up</button>
+  <hr>
+  <Proposals />
+  <h2 v-if="currentSubCouncils.length">Sub-Councils</h2>
+  <ul>
+    <li v-for="council in currentSubCouncils" :key="council.id">
+      <button @click="setCouncil(council.id)">{{ council.name }}</button>
+    </li>
+  </ul>
   <hr>
 
   <h2>
-    <span v-if="currentCouncil">Edit</span>
-    <span v-else>New</span>
-    Council
+    New Sub-Council
     <button v-if="showForm" @click="showForm=false">-</button>
     <button v-else @click="showForm=true">+</button>
   </h2>
@@ -55,38 +49,28 @@ export default {
   components: { Proposals },
   data() {
     return {
-      councilID: null,
       councilName: "",
       showForm: false
     }
   },
   methods: {
-    ...mapMutations(['setCouncil', 'unsetCouncil', 'submitCouncil']),
+    ...mapMutations(['setCouncil', 'shiftToParentCouncil', 'submitCouncil']),
     onSubmit() {
       this.submitCouncil({
         collectiveID: this.currentCollectiveID,
-        councilID: this.councilID,
+        parentCouncilID: this.currentCouncilID,
         councilName: this.councilName
       })
+      this.councilName = ""
       this.showForm = false
     },
-    updateParams() {
-      if (this.currentCouncil) {
-        this.councilID = this.currentCouncil.id
-        this.councilName = this.currentCouncil.name
-      } else {
-        this.councilID = null
-        this.councilName = ""
-      }
+    debug() {
+      console.log(this.currentCouncil)
     }
   },
   computed: {
     ...mapState(['currentCouncilID', 'currentCollectiveID']),
-    ...mapGetters(['currentCouncil', 'collectiveCouncils'])
-  },
-  watch: {
-    'currentCouncil': function() { this.updateParams() }
-  },
-  created: function() { this.updateParams() }
+    ...mapGetters(['currentCouncil', 'currentSubCouncils', 'councilNameTree'])
+  }
 }
 </script>

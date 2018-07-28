@@ -2,7 +2,7 @@ export default {
   namespaced: true,
   state: {
     collectives: [], // {id, name, description, details}
-    councils: [], // {id, CollectiveID, name}
+    councils: [], // {id, CollectiveID, parentCouncilID, name}
     members: [], // {CollectiveID, name}
     privilegeSets: [], // {id, CollectiveID, name, privileges}
     memberPrivileges: [], // {CollectiveID, memberID, psetID}
@@ -22,6 +22,7 @@ export default {
       },
       createCouncil: {
         collectiveID: "collectiveID",
+        parentCouncilID: "councilID",
         name: "string"
       },
       createMember: {
@@ -80,16 +81,20 @@ export default {
         description: params.description
       }
       state.collectives.push(newCollective)
-      return newCollective.id
+      this.commit('system/createCouncil', {
+        collectiveID: newCollective.id,
+        name: "Collective Council",
+        parentCouncilID: null
+      })
     },
     createCouncil(state, params) {
       let newCouncil = {
         id: ++state.lastCouncilID,
         collectiveID: params.collectiveID,
+        parentCouncilID: params.parentCouncilID,
         name: params.name
       }
       state.councils.push(newCouncil)
-      return newCouncil.id
     },
     createMember(state, params) {
       let newMember = {
@@ -98,7 +103,6 @@ export default {
         name: params.name
       }
       state.collectiveMembers.push(newMember)
-      return newMember.id
     },
     createPrivilegeGroup(state, params) {
       let newPrivilegeSet = {
@@ -108,7 +112,6 @@ export default {
         privileges: params.privileges
       }
       state.privilegeSets.push(newPrivilegeGroup)
-      return newPrivilegeSet.id
     },
 
     assignMemberPrivileges(state, params) {

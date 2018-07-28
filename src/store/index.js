@@ -30,11 +30,19 @@ export default new Vuex.Store({
     currentProposal: state => {
       return state.system.proposals.find(p => p.id === state.currentProposalID)
     },
-    collectiveCouncils: state => {
-      return state.system.councils.filter(c => c.collectiveID === state.currentCollectiveID)
+    currentSubCouncils: state => {
+      return state.system.councils.filter(c => c.parentCouncilID === state.currentCouncilID)
     },
     councilProposals: state => {
       return state.system.proposals.filter(p => p.councilID === state.currentCouncilID)
+    },
+    councilNameTree: (state, getters) => (council) => {
+      if (council.parentCouncilID) {
+        let parentCouncil = state.system.councils.find(c => c.id === council.parentCouncilID)
+        return getters.councilNameTree(parentCouncil) + " > " + council.name
+      } else {
+        return council.name
+      }
     }
   },
   mutations: {
@@ -45,6 +53,8 @@ export default new Vuex.Store({
           description: payload.collectiveDescription,
           details: payload.collectiveDetails
         })
+        this.commit('setCollective', state.system.lastCollectiveID)
+        this.commit('setCouncil', state.system.lastCouncilID)
       } else {
         this.commit('system/updateCollective', {
           collectiveID: payload.collectiveID,
@@ -53,25 +63,21 @@ export default new Vuex.Store({
           description: payload.collectiveDescription
         })
       }
-      this.commit('unsetCollective')
-      this.commit('setCollective', payload.collectiveID || state.system.lastCollectiveID)
     },
     submitCouncil(state, payload) {
-      console.log(payload)
-      console.log(state.system.lastCouncilID)
       if (!payload.councilID) {
         this.commit('system/createCouncil', {
           name: payload.councilName,
+          parentCouncilID: payload.parentCouncilID,
           collectiveID: payload.collectiveID
         })
+        this.commit('setCouncil', state.system.lastCouncilID)
       } else {
         this.commit('system/updateCouncil', {
           councilID: payload.councilID,
           name: payload.councilName
         })
       }
-      this.commit('unsetCouncil')
-      this.commit('setCouncil', payload.councilID || state.system.lastCouncilID)
     },
     submitProposal(state, payload) {
       if (!payload.proposalID) {
@@ -87,7 +93,6 @@ export default new Vuex.Store({
           name: payload.proposalName
         })
       }
-      this.commit('unsetProposal')
       this.commit('setProposal', payload.proposalID || state.system.lastProposalID)
     },
     unsetCollective (state) {
@@ -97,13 +102,15 @@ export default new Vuex.Store({
     },
     setCollective(state, id) {
       state.currentCollectiveID = id
-    },
-    unsetCouncil (state) {
-      state.currentCouncilID = null
-      state.currentProposalID = null
+      this.commit('setCouncil', state.system.councils.find(function(c) {
+        return c.collectiveID === id && c.parentCouncilID === null
+      }).id)
+      console.log(state.system.councils)
+      console.log(state.currentCouncilID)
     },
     setCouncil(state, id) {
       state.currentCouncilID = id
+      state.currentProposalID = null
     },
     unsetProposal (state) {
       state.currentProposalID = null
@@ -118,6 +125,5 @@ export default new Vuex.Store({
       state.currentActionGroup = []
     }
   },
-  actions: {},
   plugins: [vuexLocalStorage.plugin]
 })
