@@ -30,19 +30,19 @@ export default new Vuex.Store({
     currentProposal: state => {
       return state.system.proposals.find(p => p.id === state.currentProposalID)
     },
-    currentSubCouncils: state => {
-      return state.system.councils.filter(c => c.parentCouncilID === state.currentCouncilID)
+    collectiveCouncils: state => {
+      return state.system.councils.filter(function(c) {
+        return c.collectiveID === state.currentCollectiveID && !c.collectiveCouncil
+      })
     },
     councilProposals: state => {
       return state.system.proposals.filter(p => p.councilID === state.currentCouncilID)
     },
-    councilNameTree: (state, getters) => (council) => {
-      if (council.parentCouncilID) {
-        let parentCouncil = state.system.councils.find(c => c.id === council.parentCouncilID)
-        return getters.councilNameTree(parentCouncil) + " > " + council.name
-      } else {
-        return council.name
-      }
+    collectiveProposals: state => {
+      return state.system.proposals.filter(p => p.collectiveID === state.currentCollectiveID)
+    },
+    councilById: (state) => (id) => {
+      return state.system.councils.find(c => c.id === id)
     }
   },
   mutations: {
@@ -102,15 +102,16 @@ export default new Vuex.Store({
     },
     setCollective(state, id) {
       state.currentCollectiveID = id
-      this.commit('setCouncil', state.system.councils.find(function(c) {
-        return c.collectiveID === id && c.parentCouncilID === null
-      }).id)
-      console.log(state.system.councils)
-      console.log(state.currentCouncilID)
+      this.commit('setCollectiveCouncil')
     },
     setCouncil(state, id) {
       state.currentCouncilID = id
       state.currentProposalID = null
+    },
+    setCollectiveCouncil(state) {
+      this.commit('setCouncil', state.system.councils.find(function(c) {
+        return c.collectiveID === state.currentCollectiveID && c.collectiveCouncil === true
+      }).id)
     },
     unsetProposal (state) {
       state.currentProposalID = null

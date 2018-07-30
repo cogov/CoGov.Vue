@@ -1,21 +1,21 @@
 <template>
 <div class="council">
   <h3>
-    {{ councilNameTree(currentCouncil) }}
+    {{ currentCouncil.name }}
   </h3>
-  <button v-if="currentCouncil.parentCouncilID" @click="setCouncil(currentCouncil.parentCouncilID)">Shift Up</button>
+  <button v-if="!currentCouncil.collectiveCouncil" @click="setCollectiveCouncil">To Collective Council</button>
   <hr>
-  <Proposals />
-  <h2 v-if="currentSubCouncils.length">Sub-Councils</h2>
+  <Proposals :council="currentCouncil"/>
+  <h2 v-if="collectiveCouncils.length">Councils</h2>
   <ul>
-    <li v-for="council in currentSubCouncils" :key="council.id">
+    <li v-for="council in collectiveCouncils" :key="council.id">
       <button @click="setCouncil(council.id)">{{ council.name }}</button>
     </li>
   </ul>
   <hr>
 
   <h2>
-    New Sub-Council
+    New Council
     <button v-if="showForm" @click="showForm=false">-</button>
     <button v-else @click="showForm=true">+</button>
   </h2>
@@ -54,7 +54,7 @@ export default {
     }
   },
   methods: {
-    ...mapMutations(['setCouncil', 'shiftToParentCouncil', 'submitCouncil']),
+    ...mapMutations(['setCouncil', 'setCollectiveCouncil', 'submitCouncil']),
     onSubmit() {
       this.submitCouncil({
         collectiveID: this.currentCollectiveID,
@@ -70,7 +70,7 @@ export default {
   },
   computed: {
     ...mapState(['currentCouncilID', 'currentCollectiveID']),
-    ...mapGetters(['currentCouncil', 'currentSubCouncils', 'councilNameTree'])
+    ...mapGetters(['currentCouncil', 'collectiveCouncils', 'councilNameTree'])
   }
 }
 </script>
