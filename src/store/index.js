@@ -81,7 +81,6 @@ export default new Vuex.Store({
     },
     submitProposal(state, payload) {
       if (!payload.proposalID) {
-        console.log(payload)
         this.commit('system/createProposal', {
           name: payload.proposalName,
           councilID: payload.councilID,

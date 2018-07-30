@@ -29,7 +29,7 @@ export default {
         collectiveID: "collectiveID",
         name: "string"
       },
-      createPrivilegeGroup: {
+      createPrivilegeSet: {
         collectiveID: "collectiveID",
         name: "string",
         privileges: "[]privilege" // Privilege: "string" for now
@@ -104,14 +104,14 @@ export default {
       }
       state.collectiveMembers.push(newMember)
     },
-    createPrivilegeGroup(state, params) {
+    createPrivilegeSet(state, params) {
       let newPrivilegeSet = {
         id: ++state.lastPSetID,
         collectiveID: params.collectiveID,
         name: params.name,
         privileges: params.privileges
       }
-      state.privilegeSets.push(newPrivilegeGroup)
+      state.privilegeSets.push(newPrivilegeSet)
     },
 
     assignMemberPrivileges(state, params) {
