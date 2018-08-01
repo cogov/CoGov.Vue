@@ -67,6 +67,10 @@ export default {
       updateCouncil: {
         councilID: "councilID",
         name: "string"
+      },
+      updateMember: {
+        memberID: "memberID",
+        name: "string"
       }
     },
   },
@@ -102,7 +106,7 @@ export default {
         collectiveID: params.collectiveID,
         name: params.name
       }
-      state.collectiveMembers.push(newMember)
+      state.members.push(newMember)
     },
     createPrivilegeSet(state, params) {
       let newPrivilegeSet = {
@@ -171,6 +175,12 @@ export default {
       let council = state.councils.find(c => c.id === params.councilID)
       if (params.name) {
         council.name = params.name
+      }
+    },
+    updateMember(state, params) {
+      let member = state.member.find(m => m.id === params.memberID)
+      if (params.name) {
+        member.name = params.name
       }
     }
   }

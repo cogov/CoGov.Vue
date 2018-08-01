@@ -35,6 +35,11 @@ export default new Vuex.Store({
         return c.collectiveID === state.currentCollectiveID && !c.collectiveCouncil
       })
     },
+    collectiveMembers: state => {
+      return state.system.members.filter(function(m) {
+        return m.collectiveID === state.currentCollectiveID
+      })
+    },
     councilProposals: state => {
       return state.system.proposals.filter(p => p.councilID === state.currentCouncilID)
     },
@@ -93,6 +98,19 @@ export default new Vuex.Store({
         })
       }
       this.commit('setProposal', payload.proposalID || state.system.lastProposalID)
+    },
+    submitMember(state, payload) {
+      if (!payload.memberID) {
+        this.commit('system/createMember', {
+          name: payload.memberName,
+          collectiveID: state.currentCollectiveID
+        })
+      } else {
+        this.commit('system/updateMember', {
+          name: payload.memberName,
+          id: payload.memberID
+        })
+      }
     },
     unsetCollective (state) {
       state.currentCollectiveID = null

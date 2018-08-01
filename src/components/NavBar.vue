@@ -8,6 +8,11 @@
         </router-link>
       </li>
       <li v-if="currentCollective">
+        <router-link :to="{ name: 'member', params: {} }">
+          Members ({{ collectiveMembers.length }})
+        </router-link>
+      </li>
+      <li v-if="currentCollective">
         <router-link :to="{ name: 'council', params: {} }">
           <span v-if="currentCouncil">Council: {{ currentCouncil.name }}</span>
           <span v-else>Set/Create Council</span>
@@ -33,7 +38,7 @@ import { mapGetters } from 'vuex'
 export default {
   name: 'navbar',
   computed: {
-    ...mapGetters(['currentCollective', 'currentCouncil', 'currentProposal']),
+    ...mapGetters(['currentCollective', 'currentCouncil', 'currentProposal', 'collectiveMembers']),
   }
 }
 </script>

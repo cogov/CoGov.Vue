@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import ProposalForm from '@/views/ProposalForm.vue'
 import Collective from '@/views/Collective.vue'
 import Council from '@/views/Council.vue'
+import Member from '@/views/Member.vue'
 
 Vue.use(Router)
 
@@ -23,6 +24,11 @@ export default new Router({
       path: '/council',
       name: 'council',
       component: Council
+    },
+    {
+      path: '/member',
+      name: 'member',
+      component: Member
     }
   ]
 })
