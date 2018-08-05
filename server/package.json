@@ -1,0 +1,29 @@
+{
+	"name": "cogov.vue.server",
+	"version": "0.0.0",
+	"description": "Server for CoGov.Vue",
+	"main": "server.js",
+	"author": "Raymond Powell",
+	"dependencies": {
+		"@sendgrid/mail": "^6.2.1",
+		"body-parser": "latest",
+		"connect": "^3.6.6",
+		"connect-mongo": "^2.0.1",
+		"dateformat": "latest",
+		"dotenv": "^4.0.0",
+		"ejs": "latest",
+		"expect": "^21.2.1",
+		"express": "^4.16.3",
+		"express-async-router": "^0.1.13",
+		"express-session": "latest",
+		"gm": "^1.23.1",
+		"jsonwebtoken": "^8.2.0",
+		"localizify": "^1.2.2",
+		"mongoose": "^5.0.10",
+		"morgan": "latest",
+		"nodemon": "^1.17.1",
+		"request": "^2.85.0",
+		"system-sleep": "latest",
+		"then-request": "^6.0.0"
+	}
+}
