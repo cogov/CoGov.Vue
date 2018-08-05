@@ -1,4 +1,5 @@
 <style>
+@import './assets/css/foundation.css';
 
 #app {
     font-family: 'Avenir', Helvetica, Arial, sans-serif;

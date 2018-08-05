@@ -32,7 +32,7 @@ export default {
       createPrivilegeSet: {
         collectiveID: "collectiveID",
         name: "string",
-        privileges: "[]privilege" // Privilege: "string" for now
+        privileges: "[]privilege" // Privilege: { actionType: "string" } for now
       },
 
       assignMemberPrivileges: {
@@ -58,40 +58,38 @@ export default {
         actions: "[]action"
       },
 
-      updateCollective: {
+      setCollectiveName: {
         collectiveID: "collectiveID",
-        description: "string",
-        details: "string",
         name: "string"
       },
-      updateCouncil: {
+      setCollectiveDescription: {
+        collectiveID: "collectiveID",
+        description: "string"
+      },
+      setCollectiveDetails: {
+        collectiveID: "collectiveID",
+        details: "string"
+      },
+      setCouncilName: {
         councilID: "councilID",
         name: "string"
       },
-      updateMember: {
+      setMemberName: {
         memberID: "memberID",
         name: "string"
       }
     },
   },
   getters: {},
-  actions: {},
+  actions: {
+  },
   mutations: {
     createCollective(state, params) {
-      let newCollective = {
-        id: ++state.lastCollectiveID,
-        name: params.name,
-        details: params.details,
-        description: params.description
-      }
-      state.collectives.push(newCollective)
-      this.commit('system/createCouncil', {
-        collectiveID: newCollective.id,
-        collectiveCouncil: true,
-        name: "Collective Council"
-      })
+      let newID = params.id || ++state.lastCollectiveID
+      state.collectives.push({id: newID})
     },
     createCouncil(state, params) {
+      let newID = params.id || ++state.lastCouncilID
       let newCouncil = {
         id: ++state.lastCouncilID,
         collectiveID: params.collectiveID,
@@ -159,18 +157,19 @@ export default {
       proposal.actions = params.actions
     },
 
-    updateCollective(state, params) {
+    setCollectiveDescription(state, params) {
       let collective = state.collectives.find(c => c.id === params.collectiveID)
-      if (params.description) {
-        collective.description = params.description
-      }
-      if (params.details) {
-        collective.details = params.details
-      }
-      if (params.name) {
-        collective.name = params.name
-      }
+      collective.description = params.description
     },
+    setCollectiveDetails(state, params) {
+      let collective = state.collectives.find(c => c.id === params.collectiveID)
+      collective.details = params.details
+    },
+    setCollectiveName(state, params) {
+      let collective = state.collectives.find(c => c.id === params.collectiveID)
+      collective.name = params.name
+    },
+
     updateCouncil(state, params) {
       let council = state.councils.find(c => c.id === params.councilID)
       if (params.name) {

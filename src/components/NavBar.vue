@@ -1,11 +1,14 @@
 <template>
-  <nav class="ink-navigation nav-bar">
+  <nav class="sticky top-bar">
     <ul class="menu horizontal black">
       <li>
         <router-link :to="{ name: 'collective', params: {} }">
           <span v-if="currentCollective">Collective: {{ currentCollective.name }}</span>
           <span v-else>Set/Create Collective</span>
         </router-link>
+      </li>
+      <li v-if="currentCollective">
+        <router-link :to="{ name: 'privilege-set', params: {} }">Privilege Sets</router-link>
       </li>
       <li v-if="currentCollective">
         <router-link :to="{ name: 'member', params: {} }">

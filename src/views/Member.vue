@@ -9,8 +9,8 @@
   <div v-else>
     <h2 v-if="collectiveMembers.length">Member List</h2>
     <ul>
-      <li v-for="member in collectiveMembers" :key="member.id">
-        <button @click="viewMember(member)">{{ member.name }}</button>
+      <li v-for="cMember in collectiveMembers" :key="cMember.id">
+        <button @click="viewMember(cMember)">{{ cMember.name }}</button>
       </li>
     </ul>
   </div>
@@ -28,8 +28,18 @@
       <div class="control-group column-group gutters">
         <label for="member-name" class="all-20">Name</label>
         <div class="control all-60">
-          <input type="text" v-model="memberName">
+          <input type="text" v-model="member.name">
         </div>
+      </div>
+      Privilege Sets
+      <button @click.prevent="addPSet">Add PSet</button>
+      <div class="control-group column-group gutters" v-for="pset in member.psets">
+        <label for="privilege-set" class="all-20">PSet {{ pset }}</label>
+        <select class="all-60" name="privilege-set" v-model="pset.id" required>
+            <option v-for="privilegeSet in privilegeSets" :value="privilegeSet.id">
+                {{ privilegeSet.name }}
+            </option>
+        </select>
       </div>
     </div>
     <input type="submit" value="submit">
@@ -40,7 +50,8 @@
 <script>
 import {
   mapMutations,
-  mapGetters
+  mapGetters,
+  mapState
 }
 from 'vuex'
 
@@ -50,8 +61,11 @@ export default {
   props: ['initialMember'],
   data() {
     return {
-      memberName: "",
-      memberID: null,
+      member: {
+        name: "",
+        id: null,
+        psets: [{id: null}]
+      },
       selectedMember: this.initialMember,
       showForm: false
     }
@@ -59,26 +73,22 @@ export default {
   methods: {
     ...mapMutations(['submitMember']),
     onSubmit() {
-      this.submitMember({
-        memberName: this.memberName,
-        memberID: this.memberID
-      })
-      this.memberName = ""
+      this.submitMember(this.member)
+      this.viewMember(this.member)
       this.showForm = false
     },
+    addPSet() {
+      this.member.psets.push({id: null})
+    },
     viewMember(member) {
-      this.selectedMember = member
-      if (member) {
-        this.memberName = member.name
-        this.memberID = member.id
-      } else {
-        this.memberName = ""
-        this.memberID = null
-      }
+      //this.selectedMember = member
     }
   },
   computed: {
-    ...mapGetters(['collectiveMembers'])
+    ...mapGetters(['collectiveMembers']),
+    ...mapState({
+      privilegeSets: state => state.system.privilegeSets
+    })
   }
 }
 </script>
