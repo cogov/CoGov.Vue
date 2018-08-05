@@ -17,7 +17,7 @@ export default {
     },
   },
   actions: {
-    initiateCollective({ commit, dispatch, state }, params) {
+    initiateCollective({ commit, dispatch, state }, { collective, person }) {
       return new Promise((resolve, reject) => {
 
         let newCollectiveID = ++state.core.lastCollectiveID
@@ -26,24 +26,28 @@ export default {
         })
         commit('core/setCollectiveName', {
           collectiveID: newCollectiveID,
-          name: params.name
+          name: collective.name
         })
         commit('core/setCollectiveDescription', {
           collectiveID: newCollectiveID,
-          description: params.description
+          description: collective.description
         })
         commit('core/setCollectiveDetails', {
           collectiveID: newCollectiveID,
-          details: params.details
+          details: collective.details
         })
 
-        let newCouncilID = ++state.core.lastCouncilID
+        commit('core/addMember', {
+          collectiveID: newCollectiveID,
+          personID: person.id
+        })
+
         commit('core/createCouncil', {
-          id: newCouncilID,
           collectiveID: newCollectiveID,
           collectiveCouncil: true,
           name: "Collective Council"
         })
+        
         setTimeout(() => resolve(newCollectiveID), 1000)
       })
 

@@ -1,9 +1,10 @@
 export default {
   namespaced: true,
   state: {
+    people: [],
     collectives: [], // {id, name, description, details}
     councils: [], // {id, CollectiveID, collectiveCouncil, name}
-    members: [], // {CollectiveID, name}
+    members: [], // {CollectiveID, PersonID}
     privilegeSets: [], // {id, CollectiveID, name, privileges}
     memberPrivileges: [], // {CollectiveID, memberID, psetID}
     councilPrivileges: [], // {CollectiveID, councilID, psetID}
@@ -14,7 +15,12 @@ export default {
     lastCouncilID: 0,
     lastPSetID: 0,
     lastProposalID: 0,
+    lastPersonID: 0,
     actionTypes: {
+      registerPerson: {
+        name: "string"
+      },
+
       createCollective: { // Questionable if this needs to be represented in the system, it is the basis for all
         name: "string",
         details: "string",
@@ -25,9 +31,9 @@ export default {
         collectiveCouncil: "boolean",
         name: "string"
       },
-      createMember: {
+      joinCollective: {
         collectiveID: "collectiveID",
-        name: "string"
+        personID: "personID"
       },
       createPrivilegeSet: {
         collectiveID: "collectiveID",
@@ -84,6 +90,14 @@ export default {
   actions: {
   },
   mutations: {
+    registerPerson(state, params) {
+      let newPerson = {
+        id: ++state.lastPersonID,
+        name: params.name
+      }
+      state.people.push(newPerson)
+    },
+
     createCollective(state, params) {
       let newID = params.id || ++state.lastCollectiveID
       state.collectives.push({id: newID})
@@ -91,18 +105,20 @@ export default {
     createCouncil(state, params) {
       let newID = params.id || ++state.lastCouncilID
       let newCouncil = {
-        id: ++state.lastCouncilID,
+        id: newID,
         collectiveID: params.collectiveID,
         collectiveCouncil: params.collectiveCouncil,
         name: params.name
       }
       state.councils.push(newCouncil)
     },
-    createMember(state, params) {
+
+    addMember(state, params) {
+      let newID = params.id || ++state.lastMemberID
       let newMember = {
-        id: ++state.lastMemberID,
+        id: newID,
         collectiveID: params.collectiveID,
-        name: params.name
+        personID: params.personID
       }
       state.members.push(newMember)
     },

@@ -2,10 +2,11 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import ProposalForm from '@/views/ProposalForm.vue'
 import CreateCollective from '@/views/CreateCollective.vue'
-import Collective from '@/views/Collective.vue'
+import Collectives from '@/views/Collectives.vue'
 import Council from '@/views/Council.vue'
-import Member from '@/views/Member.vue'
+import Members from '@/views/Members.vue'
 import PrivilegeSet from '@/views/PrivilegeSet.vue'
+import Person from '@/views/Person.vue'
 
 Vue.use(Router)
 
@@ -23,9 +24,9 @@ export default new Router({
       component: CreateCollective
     },
     {
-      path: '/collective',
-      name: 'collective',
-      component: Collective
+      path: '/collectives',
+      name: 'collectives',
+      component: Collectives
     },
     {
       path: '/privilege-set',
@@ -38,9 +39,14 @@ export default new Router({
       component: Council
     },
     {
-      path: '/member',
-      name: 'member',
-      component: Member
+      path: '/person',
+      name: 'person',
+      component: Person
+    },
+    {
+      path: '/members',
+      name: 'members',
+      component: Members
     }
   ]
 })

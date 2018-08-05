@@ -53,10 +53,14 @@ export default {
   methods: {
     ...mapMutations(['setCollective']),
     onSubmit() {
-      this.$store.dispatch('generic/initiateCollective', this.collective).then((newCollectiveID) => {
+      this.$store.dispatch('generic/initiateCollective', {
+        collective: this.collective,
+        person: this.currentPerson
+      }).then((newCollectiveID) => {
         this.$store.dispatch('switchToCollective', newCollectiveID)
       })
     }
-  }
+  },
+  computed: mapGetters(['currentPerson'])
 }
 </script>

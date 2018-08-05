@@ -21,6 +21,7 @@ export default new Vuex.Store({
     currentCollectiveID: null,
     currentCouncilID: null,
     currentProposalID: null,
+    currentPersonID: null,
     currentActionGroup: []
   },
   getters: {
@@ -29,6 +30,9 @@ export default new Vuex.Store({
     },
     currentCouncil: state => {
       return state.core.councils.find(c => c.id === state.currentCouncilID)
+    },
+    currentPerson: state => {
+      return state.core.people.find(u => u.id === state.currentPersonID)
     },
     currentProposal: state => {
       return state.core.proposals.find(p => p.id === state.currentProposalID)
@@ -52,8 +56,24 @@ export default new Vuex.Store({
     councilById: (state) => (id) => {
       return state.core.councils.find(c => c.id === id)
     },
+
+// New things
+
     findCollectiveCouncil: (state) => (id) => {
       return state.core.councils.find(c => c.collectiveID === id && c.collectiveCouncil)
+    },
+    usersCollectives: state => {
+      let pMembers = state.core.members.filter(m => m.personID === state.currentPersonID)
+      let cids = new Set(pMembers.map(m => m.collectiveID))
+      return state.core.collectives.filter(c => cids.has(c.id))
+    },
+    otherCollectives: state => {
+      let pMembers = state.core.members.filter(m => m.personID === state.currentPersonID)
+      let cids = new Set(pMembers.map(m => m.collectiveID))
+      return state.core.collectives.filter(c => !cids.has(c.id))
+    },
+    getPerson: (state) => (id) => {
+      return state.core.people.find(p => p.id === id)
     }
   },
   actions: {
@@ -61,10 +81,26 @@ export default new Vuex.Store({
       commit('setCollective', collectiveID)
       let collectiveCouncil = getters.findCollectiveCouncil(collectiveID)
       commit('setCouncil', collectiveCouncil.id)
-      router.push({ name: 'collective' })
+      router.push({ name: 'collectives' })
+    },
+    joinCollective({ dispatch, commit, state }, collectiveID) {
+      commit('core/addMember', {
+        collectiveID: collectiveID,
+        personID: state.currentPersonID
+      })
+      dispatch('switchToCollective', collectiveID)
     }
   },
   mutations: {
+    signOut(state) {
+      state.currentPersonID = null
+    },
+    signIn(state, id) {
+      state.currentPersonID = id
+    },
+    register(state, newPerson) {
+      this.commit('core/registerPerson', newPerson)
+    },
     submitMember(state, payload) {
       this.commit('core/createMember', {
         name: payload.name,

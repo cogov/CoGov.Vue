@@ -1,17 +1,17 @@
 <template>
-  <nav class="sticky top-bar">
-    <ul class="menu horizontal black">
+  <nav class="top-bar">
+    <ul class="top-bar-left menu">
       <li>
-        <router-link :to="{ name: 'collective', params: {} }">
+        <router-link :to="{ name: 'collectives', params: {} }">
           <span v-if="currentCollective">Collective: {{ currentCollective.name }}</span>
-          <span v-else>Set/Create Collective</span>
+          <span v-else>Collectives</span>
         </router-link>
       </li>
       <li v-if="currentCollective">
         <router-link :to="{ name: 'privilege-set', params: {} }">Privilege Sets</router-link>
       </li>
       <li v-if="currentCollective">
-        <router-link :to="{ name: 'member', params: {} }">
+        <router-link :to="{ name: 'members', params: {} }">
           Members ({{ collectiveMembers.length }})
         </router-link>
       </li>
@@ -21,10 +21,12 @@
           <span v-else>Set/Create Council</span>
         </router-link>
       </li>
-      <li v-if="currentCouncil">
-        <router-link :to="{ name: 'proposal', params: { } }">
-          <span v-if="currentProposal">Proposal: {{ currentProposal.name }}</span>
-          <span v-else>New Proposal</span>
+    </ul>
+    <ul class="top-bar-right menu">
+      <li>
+        <router-link :to="{ name: 'person', params: {} }">
+          <span v-if="currentPerson">Person: {{ currentPerson.name }}</span>
+          <span v-else>Register/Sign In</span>
         </router-link>
       </li>
     </ul>
@@ -41,7 +43,7 @@ import { mapGetters } from 'vuex'
 export default {
   name: 'navbar',
   computed: {
-    ...mapGetters(['currentCollective', 'currentCouncil', 'currentProposal', 'collectiveMembers']),
+    ...mapGetters(['currentCollective', 'currentCouncil', 'currentPerson', 'collectiveMembers']),
   }
 }
 </script>
