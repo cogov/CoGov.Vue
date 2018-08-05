@@ -6,6 +6,7 @@ Install NPM and NodeJS: https://nodejs.org/en/
 
 ### Install Vue CLI:
 `npm install -g @vue/cli`
+
 `npm install -g @vue/cli-service-global`
 
 ### Clone this repository:
