@@ -1,7 +1,27 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import VuexPersist from 'vuex-persist'
-import core from './modules/core'
+
+let storeMode, coreModule;
+
+Vue.http.get('/storemode.txt').then(response => {
+  storeMode = response.body;
+}, response => {
+  storeMode = "error"
+});
+
+while(storeMode === undefined) {
+  require('deasync').sleep(100);
+}
+
+if (storeMode == "localStorage")
+  coreModule = './modules/core'
+else if (storeMode == "mongo")
+  coreModule = './modules/coreMongo'
+else if (storeMode == "holochain")
+  coreModule = './modules/coreHolochain'
+
+const core =  require(codeModule)
 import generic from './modules/generic'
 import router from '@/router'
 
