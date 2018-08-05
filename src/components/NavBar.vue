@@ -8,9 +8,6 @@
         </router-link>
       </li>
       <li v-if="currentCollective">
-        <router-link :to="{ name: 'privilege-set', params: {} }">Privilege Sets</router-link>
-      </li>
-      <li v-if="currentCollective">
         <router-link :to="{ name: 'members', params: {} }">
           Members ({{ collectiveMembers.length }})
         </router-link>
