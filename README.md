@@ -11,6 +11,9 @@ Install NPM and NodeJS: https://nodejs.org/en/
 ### Clone this repository:
 `git clone https://github.com/rayzer42/CoGov.Vue`
 
+### Go to Project Directory
+`cd CoGov.Vue`
+
 ### Install Dependent Packages:
 `npm install`
 
@@ -27,8 +30,12 @@ Install NPM and NodeJS: https://nodejs.org/en/
 `./node_modules/.bin/vue-cli-service build`
 
 ### To Run for Test/Prodction
-`cd server && node server.js`
+`cd server`
+
+`npm install`
+
+`node server.js`
 
 \- OR -
 
-`cd server && node_modules/nodemon/bin/nodemon.js server.js`
+`node_modules/nodemon/bin/nodemon.js server.js`
